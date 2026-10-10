@@ -20,8 +20,16 @@ if (existsSync(자원)) {
   for (const 이름 of readdirSync(자원)) {
     const 글 = readFileSync(path.join(자원, 이름), 'utf8');
     if (이름.endsWith('.js')) {
-      html = html.replace(new RegExp(`<script[^>]*src="[^"]*${이름}"[^>]*></script>`),
-        () => `<script>\n${글}\n</script>`);
+      // ⚠ 모듈 스크립트(`type="module"`)는 브라우저가 DOM 을 다 그린 뒤에 실행해 준다.
+      //    평범한 <script> 로 바꿔 넣으면 그 성질이 사라져, <head> 에 둘 경우
+      //    `#app` 이 아직 없는 상태에서 돌아 **흰 화면**이 된다(2026-10-10 실제로 겪었다).
+      //    그래서 원래 자리에서 떼어 내고 </body> 바로 앞에 넣는다.
+      // ⚠⚠ 바꿀 글을 **문자열로 넘기면 안 된다** — 자바스크립트가 그 안의 `$&`·`$1` 같은 것을
+      //    「찾은 글자」로 바꿔치기한다. 압축된 번들에는 `$&`(비트 연산 `$ & g`)가 들어 있어서,
+      //    그게 전부 `</body>` 로 바뀌며 코드가 깨졌다(2026-10-10 실제로 겪었다).
+      //    반드시 **함수**로 넘긴다.
+      html = html.replace(new RegExp(`<script[^>]*src="[^"]*${이름}"[^>]*></script>\\s*`), () => '');
+      html = html.replace('</body>', () => `<script>\n${글}\n</script>\n</body>`);
       담긴것.push(이름);
     } else if (이름.endsWith('.css')) {
       html = html.replace(new RegExp(`<link[^>]*href="[^"]*${이름}"[^>]*>`),

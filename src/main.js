@@ -20,7 +20,7 @@ const 탭들 = [
   { 키: 'rules', 글자: '④ 근거', 그리기: 근거.그리기 },
 ];
 
-const 바탕 = document.getElementById('app');
+let 바탕 = null;
 let 요약막 = null;
 
 function 지금탭() {
@@ -91,8 +91,17 @@ function 시작() {
   전체쓰기();
 }
 
-if (열렸나()) {
-  시작();
+function 켜기() {
+  바탕 = document.getElementById('app');
+  if (!바탕) return;
+  if (열렸나()) 시작();
+  else 바탕.appendChild(가림막화면(() => 시작()));
+}
+
+// ⚠ 빌드본에서는 이 코드가 **평범한 `<script>`** 로 들어간다(모듈이 아니다).
+//    그러니 DOM 이 다 그려진 뒤에 시작해야 한다 — 안 그러면 `#app` 을 못 찾아 흰 화면이 된다.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', 켜기);
 } else {
-  바탕.appendChild(가림막화면(() => 시작()));
+  켜기();
 }
