@@ -4,7 +4,7 @@
 import { h, 카드, 상자, 줄, 표, 접이, 굵게, 비우기, ask } from '../lib/ui.js';
 import { 상태, 지우기, 다시그리기 } from '../lib/store.js';
 import { 돈, 퍼센트 } from '../lib/fmt.js';
-import { 기준일, 출처, 지역표, dsr as DSR, 정책대출, 세금, 부대비용, 서민실수요요건 } from '../rules.js';
+import { 기준일, 출처, 지역표, dsr as DSR, 정책대출, 세금, 부대비용, 서민실수요요건, 참고사이트 } from '../rules.js';
 import { 잠그기 } from '../gate.js';
 import { 순서도 } from '../lib/flow.js';
 
@@ -163,6 +163,19 @@ export function 그리기(바탕) {
     ].map((t) => 상자('info', t)),
     상자('bad', h('b', {}, '이 계산기는 금융상품을 권하지 않습니다. '),
       '대출 상담·세무 상담을 대신할 수 없고, 여기 숫자를 근거로 계약하면 안 됩니다. 반드시 은행·구청·세무사에게 확인하세요.')));
+
+  /* ───── 참고한 곳 ───── */
+  통.appendChild(h('h2', { class: 'part' }, '참고한 곳'));
+  통.appendChild(카드(null,
+    상자('info',
+      '값이 의심스러우면 ', h('b', {}, '블로그나 다른 계산기 사이트가 아니라 아래부터'), ' 보세요. ',
+      '만들면서 블로그 때문에 틀린 적이 여러 번 있었습니다 — 자금조달계획서 기준 금액, 취득세 6~9억 구간 세율처럼 ',
+      '예전 규정이 그대로 남아 있는 글이 많습니다.'),
+    표(['어디', '무엇을 봤나'],
+      참고사이트.map((r) => [
+        h('a', { href: r.주소, target: '_blank', rel: 'noopener' }, r.이름),
+        h('span', {}, 굵게(r.쓴곳), r.메모 ? h('small', {}, r.메모) : null),
+      ]))));
 
   /* ───── 내 기록 ───── */
   통.appendChild(h('h2', { class: 'part' }, '내 기록'));
