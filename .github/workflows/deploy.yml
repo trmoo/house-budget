@@ -1,0 +1,54 @@
+# 내 집 예산 계산기 — 깃허브 페이지 배포
+# © 2026 티쳐무 · 모든 권리 보유
+#
+# ⚠ Pages 의 Source 가 「GitHub Actions」 여야 한다. 「Deploy from a branch」 로 두면
+#   빌드하지 않은 개발용 index.html 이 서비스되어 흰 화면이 뜨는데, 두 잡이 다 「성공」으로 찍혀 모른다.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: 계산 시험
+        run: npm test
+      - name: 소스 전수 검사
+        run: npm run check:syntax
+      - name: 빌드 (한 파일로 합치고 결과까지 점검한다)
+        run: npm run build
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+        continue-on-error: true
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

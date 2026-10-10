@@ -1,0 +1,18 @@
+{
+  "name": "house-budget",
+  "private": true,
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "type": "module",
+  "description": "내 집 예산 계산기 — 2026년 10월 규정으로 매수 가능액·필요 현금을 셈한다",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build && node tools/inline.mjs && node tools/check-dist.mjs",
+    "test": "node test/run.mjs",
+    "check:syntax": "node tools/check-syntax.mjs"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
