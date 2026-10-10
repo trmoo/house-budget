@@ -1,11 +1,10 @@
 /*! 내 집 예산 계산기 · © 2026 티쳐무 · 모든 권리 보유 */
 // ④ 근거 — 어떤 규정을 어떤 값으로 넣었나, 그리고 이 앱이 모르는 것
 
-import { h, 카드, 상자, 줄, 표, 접이, 굵게, 비우기, ask } from '../lib/ui.js';
-import { 상태, 지우기, 다시그리기 } from '../lib/store.js';
+import { h, 카드, 상자, 줄, 표, 접이, 굵게, 비우기 } from '../lib/ui.js';
+import { 상태 } from '../lib/store.js';
 import { 돈, 퍼센트 } from '../lib/fmt.js';
 import { 기준일, 유효기간, 출처, 지역표, dsr as DSR, 정책대출, 세금, 부대비용, 서민실수요요건, 참고사이트 } from '../rules.js';
-import { 잠그기 } from '../gate.js';
 import { 순서도 } from '../lib/flow.js';
 
 function 링크(키) {
@@ -196,24 +195,6 @@ export function 그리기(바탕) {
   통.appendChild(h('h2', { class: 'part' }, '내 기록'));
   통.appendChild(카드(null,
     상자('good', '적어 넣은 금액·소득은 ', h('b', {}, '이 브라우저에만'), ' 남습니다. 서버로 보내지 않고, 다른 기기에서는 보이지 않습니다.'),
-    h('div', { class: 'btns' },
-      h('button', {
-        class: 'btn btn-weak',
-        onclick: async () => {
-          if (await ask('적어 넣은 값이 모두 처음 상태로 돌아갑니다. 계속할까요?')) {
-            지우기();
-            다시그리기();
-          }
-        },
-      }, '내 기록 지우기'),
-      h('button', {
-        class: 'btn btn-weak',
-        onclick: async () => {
-          if (await ask('이 브라우저에서 다시 비밀번호를 묻게 할까요?')) {
-            잠그기();
-            location.reload();
-          }
-        },
-      }, '잠그기'))));
+    상자('info', '지우거나 잠그려면 ', h('b', {}, '화면 오른쪽 위'), ' 의 [내 기록 지우기] · [🔒 잠그기] 를 누르세요. 어느 탭에서나 보입니다.')));
 
 }

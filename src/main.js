@@ -2,9 +2,9 @@
 // 화면을 조립한다 — 가림막 → (머리말 · 탭 · 요약 줄 · 본문)
 
 import './style.css';
-import { 열렸나, 가림막화면 } from './gate.js';
-import { 상태, 불러오기, 그리기등록, 요약등록, 다시그리기 } from './lib/store.js';
-import { h, 비우기, beginScreen, 상자 } from './lib/ui.js';
+import { 열렸나, 가림막화면, 잠그기 } from './gate.js';
+import { 상태, 불러오기, 그리기등록, 요약등록, 다시그리기, 지우기 } from './lib/store.js';
+import { h, 비우기, beginScreen, 상자, ask } from './lib/ui.js';
 import { 돈, 억짧게 } from './lib/fmt.js';
 import { 계산, 최대매수가 } from './engine/all.js';
 import { 기준일 } from './rules.js';
@@ -37,7 +37,7 @@ function 요약쓰기() {
   const 모자람 = 추천 ? 추천.차이 : -1;
   비우기(요약막);
   요약막.appendChild(h('div', { class: 'summary-in' },
-    칸하나('살 수 있는 값', 억짧게(최대.값)),
+    칸하나('살 수 있는 값', 억짧게(최대.값), 최대.값 > 0 ? '' : 'bad'),
     칸하나('대출', 추천 && 추천.가능 ? 억짧게(추천.대출) : '—'),
     칸하나(모자람 >= 0 ? '남는 돈' : '모자란 돈', 추천 ? 억짧게(Math.abs(모자람)) : '—',
       모자람 >= 0 ? 'good' : 'bad'),
@@ -58,7 +58,29 @@ function 전체쓰기() {
   바탕.appendChild(h('header', { class: 'top' },
     h('div', { class: 'top-in' },
       h('span', { class: 'top-title' }, '🏠 내 집 예산 계산기'),
-      h('span', { class: 'top-sub' }, `${기준일} 규정`))));
+      h('span', { class: 'top-sub' }, `${기준일} 규정`),
+      // 어느 탭에 있든 바로 누를 수 있게 머리말 오른쪽에 붙인다(머리말이 sticky 라 늘 보인다)
+      h('div', { class: 'top-btns' },
+        h('button', {
+          class: 'top-btn',
+          title: '이 브라우저에 저장된 입력값을 모두 지웁니다',
+          onclick: async () => {
+            if (await ask('적어 넣은 값이 모두 처음 상태로 돌아갑니다. 계속할까요?')) {
+              지우기();
+              다시그리기();
+            }
+          },
+        }, '내 기록 지우기'),
+        h('button', {
+          class: 'top-btn',
+          title: '다시 비밀번호를 묻게 합니다',
+          onclick: async () => {
+            if (await ask('이 브라우저에서 다시 비밀번호를 묻게 할까요?')) {
+              잠그기();
+              location.reload();
+            }
+          },
+        }, '🔒 잠그기')))));
 
   바탕.appendChild(h('nav', { class: 'tabs' },
     h('div', { class: 'tabs-in' },
