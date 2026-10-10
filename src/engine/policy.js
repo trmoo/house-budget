@@ -6,6 +6,7 @@
 
 import { 정책대출, 지역표 } from '../rules.js';
 import { PV, 담보가치, 방공제금액 } from './loan.js';
+import { 청약쓰기 } from './cash.js';
 import { 돈 } from '../lib/fmt.js';
 
 /**
@@ -22,6 +23,8 @@ export function 기존부채DTI(s) {
   if (기타 > 0) 줄.push({ 이름: '다른 집 주담대 원리금', 연: (기타 * 12) / 10000 });
   const 학자금 = Number(s.학자금월) || 0;
   if (학자금 > 0 && s.학자금포함) 줄.push({ 이름: '학자금대출', 연: (학자금 * 12) / 10000 });
+  const 통장 = 청약쓰기(s);
+  if (통장.고름 === '담보' && 통장.연이자 > 0) 줄.push({ 이름: '청약통장 담보대출 이자', 연: 통장.연이자 });
   const 연 = 줄.reduce((a, b) => a + b.연, 0);
   return { 연, 월원: (연 * 10000) / 12, 줄 };
 }
