@@ -112,6 +112,11 @@ export function 카드(제목, ...내용) {
     ...내용);
 }
 
+/** 자료에 적어 둔 `**굵게**` 를 살려서 넣는다 (h() 자식 자리에 쓸 수 있는 조각들로) */
+export function 굵게(글) {
+  return String(글).split(/\*\*(.+?)\*\*/g).map((t, i) => (i % 2 === 1 ? h('b', {}, t) : t));
+}
+
 /** 안내·경고·주의 상자. 종류: 'info' | 'warn' | 'bad' | 'good' */
 export function 상자(종류, ...내용) {
   return h('div', { class: `note note-${종류}` }, ...내용);
