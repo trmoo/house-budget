@@ -4,10 +4,11 @@
 import './style.css';
 import { 열렸나, 가림막화면, 잠그기 } from './gate.js';
 import { 상태, 불러오기, 그리기등록, 요약등록, 다시그리기, 지우기 } from './lib/store.js';
-import { h, 비우기, beginScreen, 상자, ask } from './lib/ui.js';
+import { h, 비우기, beginScreen, 상자, ask, modal } from './lib/ui.js';
 import { 돈, 억짧게 } from './lib/fmt.js';
 import { 계산, 최대매수가 } from './engine/all.js';
 import { 기준일 } from './rules.js';
+import { 저장하기, 파일이름 } from './print.js';
 import * as 내상황 from './tabs/t1-me.js';
 import * as 집지역 from './tabs/t2-house.js';
 import * as 결과 from './tabs/t3-result.js';
@@ -61,6 +62,29 @@ function 전체쓰기() {
       h('span', { class: 'top-sub' }, `${기준일} 규정`),
       // 어느 탭에 있든 바로 누를 수 있게 머리말 오른쪽에 붙인다(머리말이 sticky 라 늘 보인다)
       h('div', { class: 'top-btns' },
+        h('button', {
+          class: 'top-btn strong',
+          title: '계산 과정과 결과를 한 장짜리 문서로 만들어 PDF 로 저장합니다',
+          onclick: async () => {
+            // ⚠ 브라우저가 PDF 를 바로 만들어 주지는 않는다 — 인쇄창에서 「PDF로 저장」을 골라야 한다.
+            //   그 한 걸음을 모르면 프린터로 나가 버리므로 먼저 알려 준다.
+            const 눌렀나 = await modal({
+              제목: '📄 PDF 로 저장',
+              본문: [
+                h('p', {}, '계산 과정과 결과를 한 장짜리 문서로 만들어 ', h('b', {}, '인쇄창'), '을 엽니다.'),
+                h('p', {}, h('b', {}, '인쇄창에서 「대상(프린터)」을 「PDF로 저장」으로 바꿔 주세요.'),
+                  ' 기본값이 프린터로 되어 있을 수 있습니다.'),
+                h('p', {}, '저장되는 파일 이름 — ', h('b', {}, `${파일이름()}.pdf`)),
+                h('p', {}, h('small', {}, '적어 넣은 금액·소득이 그대로 들어갑니다. 남에게 줄 파일이면 한 번 더 살펴보세요.')),
+              ],
+              단추들: [
+                { 글자: '취소', 값: false, 약하게: true },
+                { 글자: '인쇄창 열기', 값: true },
+              ],
+            });
+            if (눌렀나) 저장하기(상태);
+          },
+        }, '📄 PDF 저장'),
         h('button', {
           class: 'top-btn',
           title: '이 브라우저에 저장된 입력값을 모두 지웁니다',

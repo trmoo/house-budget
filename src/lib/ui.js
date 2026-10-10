@@ -32,6 +32,10 @@ export function h(태그, 속성, ...자식들) {
 function 붙이기(el, 자식들) {
   for (const c of 자식들.flat(4)) {
     if (c === null || c === undefined || c === false || c === true) continue;
+    /* ★ `rules.js` 의 글에는 `**굵게**` 표시가 섞여 있다. 쓰는 쪽에서 `굵게()` 를 빠뜨리면
+       화면에 별표가 그대로 찍힌다(2026-10-10 검토에서 다섯 곳이 걸렸다).
+       부르는 곳마다 챙기게 하지 않고 **여기 한 곳에서** 바꾼다. */
+    if (typeof c === 'string' && c.includes('**')) { 붙이기(el, [굵게(c)]); continue; }
     el.appendChild(c instanceof Node ? c : document.createTextNode(String(c)));
   }
 }
