@@ -8,7 +8,7 @@
 //   서버로 보내지 않고 그 브라우저에만 남는다. 그래서 이 수준으로 둔다.
 //   (진짜로 막아야 할 내용이 생기면 긴 바탕말로 내용을 암호화하거나 서버가 확인하게 해야 한다.)
 
-import { h, 상자 } from './lib/ui.js';
+import { h } from './lib/ui.js';
 
 // SHA-256('house-budget:' + 비밀번호)
 const 정답해시 = '6bb6139d1d16df29f25b1ac6dba5871ef6884aa461bb152b6e00ef175d675695';
@@ -135,11 +135,6 @@ export function 가림막화면(열렸을때) {
       h('button', { class: 'btn btn-main gate-btn', onclick: 눌림 }, '들어가기'),
       알림,
       h('label', { class: 'gate-keep' }, 기억, ' 이 브라우저에서 기억하기'),
-      상자('info',
-        h('b', {}, '이 잠금은 가림막입니다. '),
-        '여섯 자리 숫자는 소스를 보면 금방 풀립니다. ',
-        '대신 이 계산기 안에는 가려야 할 내용이 없습니다 — 규정과 계산식뿐이고, ',
-        '적어 넣은 금액·소득은 서버로 가지 않고 이 브라우저에만 남습니다.'),
       h('p', { class: 'gate-foot' }, '© 2026 티쳐무 · 모든 권리 보유')));
 
   setTimeout(() => 칸.focus(), 0);

@@ -55,7 +55,6 @@ if (!글.includes('6bb6139d1d16df29f25b1ac6dba5871ef6884aa461bb152b6e00ef175d675
   틀림.push('비밀번호 해시가 없습니다');
 }
 if (글.includes('202610')) 틀림.push('비밀번호가 글자 그대로 들어 있습니다');
-if (!글.includes('가림막')) 틀림.push('「가림막」이라고 밝히는 문구가 없습니다');
 
 // 규정 기준일과 「모른다」를 밝히는 문구
 if (!글.includes('2026-10-10')) 틀림.push('규정 기준일이 없습니다');
@@ -77,7 +76,6 @@ try {
   } else {
     const 첫화면 = 세상.앱.textContent;
     if (!첫화면.includes('내 집 예산 계산기')) 틀림.push(`첫 화면에 제목이 없습니다 — ${첫화면.slice(0, 40)}`);
-    if (!첫화면.includes('가림막')) 틀림.push('첫 화면에 가림막 안내가 없습니다');
 
     // 비밀번호를 넣어 열어 본다
     const 칸 = 세상.훑기(세상.앱).find((e) => e.attrs.type === 'password');

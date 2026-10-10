@@ -2,7 +2,7 @@
 // 직접 만든 SHA-256 이 node 의 crypto 와 같은 값을 내는지 본다.
 // (브라우저의 crypto.subtle 은 비동기라 쓰지 않았다 — file:// 로 열어도 돌아가야 한다)
 import { createHash } from 'node:crypto';
-import { 묶음, 시험, 같나, 참인가, 거짓인가 } from './harness.mjs';
+import { 묶음, 시험, 같나, 거짓인가 } from './harness.mjs';
 
 // gate.js 는 window 를 쓰는 ui.js 를 불러오므로, 해시 함수만 떼어 읽는다.
 import { readFileSync } from 'node:fs';
@@ -22,4 +22,3 @@ for (const 글자 of ['', 'abc', '202610', 'house-budget:202610', '내 집 예�
 const 정답해시 = 글.match(/정답해시 = '([0-9a-f]{64})'/)[1];
 시험('해시가 비밀번호와 맞는다', () => 같나(sha256('house-budget:202610'), 정답해시));
 시험('소스에 비밀번호가 글자로 들어 있지 않다', () => 거짓인가(글.includes('202610'), '소스에 비밀번호가 그대로 적혀 있다'));
-시험('가림막이라고 밝혀 두었다', () => 참인가(글.includes('가림막')));
